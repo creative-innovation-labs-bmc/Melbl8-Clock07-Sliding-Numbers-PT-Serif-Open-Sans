@@ -5,18 +5,36 @@
   const STAGE_HEIGHT = 804;
   const ZONE = 'Australia/Melbourne';
   const WEATHER_REFRESH_MS = 10 * 60 * 1000;
-  const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=-37.8183&longitude=144.9479&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&temperature_unit=celsius&wind_speed_unit=kmh&timezone=Australia%2FMelbourne';
 
   const stage = document.getElementById('stage');
   const viewport = document.getElementById('viewport');
+  const timezoneEl = document.getElementById('timezone');
+  const separators = Array.from(document.querySelectorAll('.separator'));
+
+  const topbar = document.querySelector('.topbar');
+  topbar.setAttribute('aria-label', 'Melbourne date and live weather');
+  topbar.innerHTML = `
+    <div class="topline">
+      <span class="top-strong">MELBOURNE, AUSTRALIA</span>
+      <span class="top-dot" aria-hidden="true">·</span>
+      <span id="weekday">FRIDAY</span>
+      <span id="date">14 AUGUST 2026</span>
+      <span class="top-dot" aria-hidden="true">·</span>
+      <span class="top-strong">LIVE WEATHER</span>
+      <span id="weather-temp">--°C</span>
+      <span id="weather-condition">UPDATING</span>
+      <span class="top-dot" aria-hidden="true">·</span>
+      <span id="weather-wind">WIND -- KM/H</span>
+      <span class="top-dot" aria-hidden="true">·</span>
+      <span id="weather-humidity">HUMIDITY --%</span>
+    </div>`;
+
   const weekdayEl = document.getElementById('weekday');
   const dateEl = document.getElementById('date');
-  const timezoneEl = document.getElementById('timezone');
   const weatherTempEl = document.getElementById('weather-temp');
   const weatherConditionEl = document.getElementById('weather-condition');
   const weatherWindEl = document.getElementById('weather-wind');
   const weatherHumidityEl = document.getElementById('weather-humidity');
-  const separators = Array.from(document.querySelectorAll('.separator'));
 
   const formatter = new Intl.DateTimeFormat('en-AU', {
     timeZone: ZONE,
@@ -141,30 +159,38 @@
     return 'CURRENT CONDITIONS';
   }
 
-  async function refreshWeather() {
-    try {
-      const response = await fetch(WEATHER_URL, { cache: 'no-store' });
-      if (!response.ok) throw new Error('Weather request failed');
-      const data = await response.json();
-      const current = data.current || {};
+  function applyWeather() {
+    const current = window.__clock07Weather;
+    if (!current) return;
 
-      if (Number.isFinite(current.temperature_2m)) {
-        weatherTempEl.textContent = `${Math.round(current.temperature_2m)}°C`;
-      }
-      if (Number.isFinite(current.weather_code)) {
-        weatherConditionEl.textContent = weatherLabel(current.weather_code);
-      }
-      if (Number.isFinite(current.wind_speed_10m)) {
-        weatherWindEl.textContent = `WIND ${Math.round(current.wind_speed_10m)} KM/H`;
-      }
-      if (Number.isFinite(current.relative_humidity_2m)) {
-        weatherHumidityEl.textContent = `HUMIDITY ${Math.round(current.relative_humidity_2m)}%`;
-      }
-    } catch (_error) {
+    if (Number.isFinite(current.temperature)) {
+      weatherTempEl.textContent = `${Math.round(current.temperature)}°C`;
+    }
+    if (Number.isFinite(current.code)) {
+      weatherConditionEl.textContent = weatherLabel(current.code);
+    }
+    if (Number.isFinite(current.wind)) {
+      weatherWindEl.textContent = `WIND ${Math.round(current.wind)} KM/H`;
+    }
+    if (Number.isFinite(current.humidity)) {
+      weatherHumidityEl.textContent = `HUMIDITY ${Math.round(current.humidity)}%`;
+    }
+  }
+
+  function loadWeatherData() {
+    const previous = document.getElementById('clock07-weather-data');
+    if (previous) previous.remove();
+
+    const script = document.createElement('script');
+    script.id = 'clock07-weather-data';
+    script.src = `weather-data.js?v=${Math.floor(Date.now() / WEATHER_REFRESH_MS)}`;
+    script.onload = applyWeather;
+    script.onerror = () => {
       if (weatherConditionEl.textContent === 'UPDATING') {
         weatherConditionEl.textContent = 'WEATHER UNAVAILABLE';
       }
-    }
+    };
+    document.head.appendChild(script);
   }
 
   let firstRender = true;
@@ -216,7 +242,7 @@
     if (!document.hidden) {
       render(new Date());
       scheduleTick();
-      refreshWeather();
+      loadWeatherData();
     }
   });
 
@@ -225,7 +251,7 @@
 
   fitStage();
   render(new Date());
-  refreshWeather();
-  setInterval(refreshWeather, WEATHER_REFRESH_MS);
+  loadWeatherData();
+  setInterval(loadWeatherData, WEATHER_REFRESH_MS);
   scheduleTick();
 })();
