@@ -1,31 +1,24 @@
 # Project brief
 
-## Description
+## Purpose
+Create a visually distinct, kinetic clock for the Melbourne Level 8 ultra-wide display while keeping runtime cost low enough for Enplug on NVIDIA Shield.
 
-Shield-optimised sliding-number clock for the Melbourne 3840 × 804 Enplug display using PT Serif and Open Sans.
+## Native canvas
+3840 × 804.
 
-## Build brief
+## Concept
+Large mechanical numeral windows. Each changed digit rolls upward and the next value enters from below. The movement should feel physical without recreating a full split-flap mechanism.
 
-Purpose:
-Create Clock 07 for the Melbourne video-wall clock rotation.
+## Hard constraints
+- Melbourne time via `Australia/Melbourne`.
+- PT Serif for large serif numerals.
+- Open Sans for sans-serif interface text.
+- Use only the approved PT Serif and Open Sans font assets. No old Meta or legacy brand fonts.
+- No external runtime frameworks.
+- No continuous 60 fps animation loop.
+- No canvas, WebGL, animated filters or large DOM fields.
+- Production URL must work without query-string parameters.
+- Prevent search-engine indexing where supported by page-level robot directives and `robots.txt`.
 
-Main features:
-- Native 3840 × 804 composition.
-- Three mechanical time sections for hour, minute and second.
-- Two oversized PT Serif digits per section.
-- Open Sans for supporting metadata.
-- Aurecon green accent for seconds and separators.
-- Melbourne timezone locked to Australia/Melbourne.
-- Only changed digits animate using lightweight translate3d transitions.
-
-Constraints:
-- Must run smoothly in Enplug on NVIDIA Shield.
-- No canvas, WebGL, particle systems, animated SVG filters, blur filters or continuous animation loops.
-- Keep DOM count low and animate only changed digits.
-- Use locally hosted PT Serif and Open Sans assets in the final repo.
-- No Meta or legacy font files.
-- Add noindex, nofollow and noarchive protections plus robots.txt.
-- GitHub Pages production URL should require no debug query parameters.
-
-Deployment:
-Public GitHub repository with GitHub Pages enabled.
+## QC target
+Test at native 3840 × 804 and at common mobile/desktop viewport ratios. The target display is the NVIDIA Shield/Enplug path, so animation simplicity takes priority over effects.
