@@ -1,14 +1,73 @@
 <!doctype html>
-<html lang="en-AU">
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow, noarchive">
-  <title>Melbl8-Clock07-Sliding-Numbers-PT-Serif-Open-Sans</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self' https://creative-innovation-labs-bmc.github.io; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="theme-color" content="#1C1B1C">
+  <title>Melbourne Sliding Numbers Clock</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main><h1>Melbl8-Clock07-Sliding-Numbers-PT-Serif-Open-Sans</h1><p>Shield-optimised sliding-number clock for the Melbourne 3840 × 804 Enplug display using PT Serif and Open Sans.</p><p>Starter created. The full implementation is next.</p></main>
+  <main id="viewport" aria-label="Melbourne sliding numbers clock">
+    <section id="stage">
+      <header class="topbar">
+        <div class="location-group">
+          <div class="eyebrow">MELBOURNE</div>
+          <div class="subline">AUSTRALIA</div>
+        </div>
+        <div class="top-centre" aria-hidden="true">LOCAL TIME</div>
+        <div class="date-group">
+          <div id="weekday" class="eyebrow">FRIDAY</div>
+          <div id="date" class="subline">14 AUGUST 2026</div>
+        </div>
+      </header>
+
+      <div class="clock" aria-live="off">
+        <section class="unit unit-hour" aria-label="Hours">
+          <div class="unit-label">HOUR</div>
+          <div class="digits" data-unit="hour">
+            <div class="digit-window" data-digit="h1"><div class="digit-track"><div class="digit-face current">0</div><div class="digit-face next">0</div></div></div>
+            <div class="digit-window" data-digit="h2"><div class="digit-track"><div class="digit-face current">0</div><div class="digit-face next">0</div></div></div>
+          </div>
+          <div class="unit-foot"><span>00</span><span>23</span></div>
+        </section>
+
+        <div class="separator" aria-hidden="true"><span></span><span></span></div>
+
+        <section class="unit unit-minute" aria-label="Minutes">
+          <div class="unit-label">MINUTE</div>
+          <div class="digits" data-unit="minute">
+            <div class="digit-window" data-digit="m1"><div class="digit-track"><div class="digit-face current">0</div><div class="digit-face next">0</div></div></div>
+            <div class="digit-window" data-digit="m2"><div class="digit-track"><div class="digit-face current">0</div><div class="digit-face next">0</div></div></div>
+          </div>
+          <div class="unit-foot"><span>00</span><span>59</span></div>
+        </section>
+
+        <div class="separator" aria-hidden="true"><span></span><span></span></div>
+
+        <section class="unit unit-second" aria-label="Seconds">
+          <div class="unit-label">SECOND</div>
+          <div class="digits" data-unit="second">
+            <div class="digit-window" data-digit="s1"><div class="digit-track"><div class="digit-face current">0</div><div class="digit-face next">0</div></div></div>
+            <div class="digit-window" data-digit="s2"><div class="digit-track"><div class="digit-face current">0</div><div class="digit-face next">0</div></div></div>
+          </div>
+          <div class="unit-foot"><span>00</span><span>59</span></div>
+        </section>
+      </div>
+
+      <footer class="footer">
+        <div>3840 × 804</div>
+        <div class="footer-line" aria-hidden="true"></div>
+        <div id="timezone">AUSTRALIA/MELBOURNE · UTC+10</div>
+      </footer>
+
+      <div id="debug" hidden></div>
+    </section>
+  </main>
   <script src="app.js"></script>
 </body>
 </html>
