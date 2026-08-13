@@ -4,11 +4,19 @@
   const STAGE_WIDTH = 3840;
   const STAGE_HEIGHT = 804;
   const ZONE = 'Australia/Melbourne';
+  const WEATHER_REFRESH_MS = 10 * 60 * 1000;
+  const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=-37.8183&longitude=144.9479&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&temperature_unit=celsius&wind_speed_unit=kmh&timezone=Australia%2FMelbourne';
+
   const stage = document.getElementById('stage');
   const viewport = document.getElementById('viewport');
   const weekdayEl = document.getElementById('weekday');
   const dateEl = document.getElementById('date');
   const timezoneEl = document.getElementById('timezone');
+  const weatherTempEl = document.getElementById('weather-temp');
+  const weatherConditionEl = document.getElementById('weather-condition');
+  const weatherWindEl = document.getElementById('weather-wind');
+  const weatherHumidityEl = document.getElementById('weather-humidity');
+  const separators = Array.from(document.querySelectorAll('.separator'));
 
   const formatter = new Intl.DateTimeFormat('en-AU', {
     timeZone: ZONE,
@@ -118,6 +126,47 @@
     });
   });
 
+  function weatherLabel(code) {
+    if (code === 0) return 'CLEAR';
+    if (code === 1) return 'MAINLY CLEAR';
+    if (code === 2) return 'PARTLY CLOUDY';
+    if (code === 3) return 'OVERCAST';
+    if (code === 45 || code === 48) return 'FOG';
+    if ([51, 53, 55, 56, 57].includes(code)) return 'DRIZZLE';
+    if ([61, 63, 65, 66, 67].includes(code)) return 'RAIN';
+    if ([71, 73, 75, 77].includes(code)) return 'SNOW';
+    if ([80, 81, 82].includes(code)) return 'SHOWERS';
+    if ([85, 86].includes(code)) return 'SNOW SHOWERS';
+    if ([95, 96, 99].includes(code)) return 'THUNDERSTORM';
+    return 'CURRENT CONDITIONS';
+  }
+
+  async function refreshWeather() {
+    try {
+      const response = await fetch(WEATHER_URL, { cache: 'no-store' });
+      if (!response.ok) throw new Error('Weather request failed');
+      const data = await response.json();
+      const current = data.current || {};
+
+      if (Number.isFinite(current.temperature_2m)) {
+        weatherTempEl.textContent = `${Math.round(current.temperature_2m)}°C`;
+      }
+      if (Number.isFinite(current.weather_code)) {
+        weatherConditionEl.textContent = weatherLabel(current.weather_code);
+      }
+      if (Number.isFinite(current.wind_speed_10m)) {
+        weatherWindEl.textContent = `WIND ${Math.round(current.wind_speed_10m)} KM/H`;
+      }
+      if (Number.isFinite(current.relative_humidity_2m)) {
+        weatherHumidityEl.textContent = `HUMIDITY ${Math.round(current.relative_humidity_2m)}%`;
+      }
+    } catch (_error) {
+      if (weatherConditionEl.textContent === 'UPDATING') {
+        weatherConditionEl.textContent = 'WEATHER UNAVAILABLE';
+      }
+    }
+  }
+
   let firstRender = true;
   let lastDate = '';
 
@@ -138,6 +187,9 @@
     Object.entries(values).forEach(([key, value]) => {
       setDigit(key, value, !firstRender);
     });
+
+    const blinkOff = Number(time.second) % 2 === 1;
+    separators.forEach((separator) => separator.classList.toggle('blink-off', blinkOff));
 
     if (time.date !== lastDate) {
       weekdayEl.textContent = time.weekday;
@@ -164,6 +216,7 @@
     if (!document.hidden) {
       render(new Date());
       scheduleTick();
+      refreshWeather();
     }
   });
 
@@ -172,5 +225,7 @@
 
   fitStage();
   render(new Date());
+  refreshWeather();
+  setInterval(refreshWeather, WEATHER_REFRESH_MS);
   scheduleTick();
 })();
