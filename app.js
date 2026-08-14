@@ -9,16 +9,18 @@
   const stage = document.getElementById('stage');
   const viewport = document.getElementById('viewport');
   const timezoneEl = document.getElementById('timezone');
-  const separators = Array.from(document.querySelectorAll('.separator'));
 
   const topbar = document.querySelector('.topbar');
-  topbar.setAttribute('aria-label', 'Melbourne date and live weather');
+  topbar.setAttribute('aria-label', 'Melbourne date and Docklands live weather');
   topbar.innerHTML = `
-    <div class="topline">
+    <div class="topline topline-left">
       <span class="top-strong">MELBOURNE, AUSTRALIA</span>
       <span class="top-dot" aria-hidden="true">·</span>
       <span id="weekday">FRIDAY</span>
       <span id="date">14 AUGUST 2026</span>
+    </div>
+    <div class="topline topline-right">
+      <span class="top-strong">DOCKLANDS</span>
       <span class="top-dot" aria-hidden="true">·</span>
       <span class="top-strong">LIVE WEATHER</span>
       <span id="weather-temp">--°C</span>
@@ -213,9 +215,6 @@
     Object.entries(values).forEach(([key, value]) => {
       setDigit(key, value, !firstRender);
     });
-
-    const blinkOff = Number(time.second) % 2 === 1;
-    separators.forEach((separator) => separator.classList.toggle('blink-off', blinkOff));
 
     if (time.date !== lastDate) {
       weekdayEl.textContent = time.weekday;
