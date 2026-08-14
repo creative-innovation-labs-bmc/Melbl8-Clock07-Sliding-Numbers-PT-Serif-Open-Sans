@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Melbourne weather data
+      - name: Build Docklands weather data
         shell: bash
         run: |
           python3 - <<'PY'
@@ -36,8 +36,8 @@ jobs:
 
           url = (
               "https://api.open-meteo.com/v1/forecast"
-              "?latitude=-37.8183"
-              "&longitude=144.9479"
+              "?latitude=-37.8214"
+              "&longitude=144.9449"
               "&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m"
               "&temperature_unit=celsius"
               "&wind_speed_unit=kmh"
