@@ -11,7 +11,7 @@
   const timezoneEl = document.getElementById('timezone');
 
   const topbar = document.querySelector('.topbar');
-  topbar.setAttribute('aria-label', 'Melbourne date and Docklands live weather');
+  topbar.setAttribute('aria-label', 'Melbourne date and 850 Collins Street Docklands live weather');
   topbar.innerHTML = `
     <div class="topline topline-left">
       <span class="top-strong">MELBOURNE, AUSTRALIA</span>
@@ -20,7 +20,7 @@
       <span id="date">14 AUGUST 2026</span>
     </div>
     <div class="topline topline-right">
-      <span class="top-strong">DOCKLANDS</span>
+      <span class="top-strong">850 COLLINS ST, DOCKLANDS</span>
       <span class="top-dot" aria-hidden="true">·</span>
       <span class="top-strong">LIVE WEATHER</span>
       <span id="weather-temp">--°C</span>
